@@ -23,9 +23,10 @@ defmodule ReqHammer do
     request
     |> Req.Request.register_options([:rate_limit])
     |> Req.Request.merge_options(options)
-    |> Req.Request.append_request_steps(rate_limit: &apply_rate_limit/1)
+    |> Req.Request.append_request_steps(rate_limit: &__MODULE__.apply_rate_limit/1)
   end
 
+  @doc false
   def apply_rate_limit(%Req.Request{} = request) do
     with {:cont, options} <- fetch_options(request),
          {:cont, validated} <- validate_options(request, options) do
